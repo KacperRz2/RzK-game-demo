@@ -11,7 +11,7 @@ public struct CubeInput : IInputComponentData
 [DisallowMultipleComponent]
 public class CubeInputAuthoring : MonoBehaviour
 {
-    class CubeInputBaking : Unity.Entities.Baker<CubeInputAuthoring>
+    class CubeInputBaking : Baker<CubeInputAuthoring>
     {
         public override void Bake(CubeInputAuthoring authoring)
         {
@@ -22,27 +22,29 @@ public class CubeInputAuthoring : MonoBehaviour
 }
 
 [UpdateInGroup(typeof(GhostInputSystemGroup))]
-public partial struct SampleCubeInput : ISystem
+public partial class SampleCubeInput : SystemBase
 {
-    public void OnCreate(ref SystemState state)
+    private InputSystem_Actions _inputActions;
+    protected override void OnCreate()
     {
-        state.RequireForUpdate<NetworkStreamInGame>();
-        state.RequireForUpdate<CubeSpawner>();
+        RequireForUpdate<NetworkStreamInGame>();
+        RequireForUpdate<CubeSpawner>();
+        _inputActions = new InputSystem_Actions();
+        _inputActions.Player.Enable();
     }
-
-    public void OnUpdate(ref SystemState state)
+    protected override void OnDestroy()
     {
+        _inputActions.Player.Disable();
+        _inputActions.Dispose();
+    }
+    protected override void OnUpdate()
+    {
+        Vector2 moveInput = _inputActions.Player.Move.ReadValue<Vector2>();
+
         foreach (var playerInput in SystemAPI.Query<RefRW<CubeInput>>().WithAll<GhostOwnerIsLocal>())
         {
-            playerInput.ValueRW = default;
-            if (Input.GetKey("left"))
-                playerInput.ValueRW.Horizontal -= 1;
-            if (Input.GetKey("right"))
-                playerInput.ValueRW.Horizontal += 1;
-            if (Input.GetKey("down"))
-                playerInput.ValueRW.Vertical -= 1;
-            if (Input.GetKey("up"))
-                playerInput.ValueRW.Vertical += 1;
+            playerInput.ValueRW.Horizontal = Mathf.RoundToInt(moveInput.x);
+            playerInput.ValueRW.Vertical = Mathf.RoundToInt(moveInput.y);
         }
     }
 }

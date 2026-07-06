@@ -3,6 +3,8 @@ using Unity.Burst;
 using Unity.Collections;
 using Unity.Entities;
 using Unity.NetCode;
+using Unity.Transforms;
+using Unity.Mathematics;
 
 
 /// <summary>
@@ -95,10 +97,14 @@ public partial struct GoInGameServerSystem : ISystem
             var networkId = networkIdFromEntity[reqSrc.ValueRO.SourceConnection];
 
             // Log information about the connection request that includes the client's assigned NetworkId and the name of the prefab spawned.
-            UnityEngine.Debug.Log($"'{worldName}' setting connection '{networkId.Value}' to in game, spawning a Ghost '{prefabName}' for them!");
+            Debug.Log($"'{worldName}' setting connection '{networkId.Value}' to in game, spawning a Ghost '{prefabName}' for them!");
 
             // Instantiate the prefab
             var player = commandBuffer.Instantiate(prefab);
+
+            var transform = LocalTransform.FromPosition(new float3(0.0F, 1.0F, 0.0F));
+            commandBuffer.SetComponent(player, transform);
+
             // Associate the instantiated prefab with the connected client's assigned NetworkId
             commandBuffer.SetComponent(player, new GhostOwner { NetworkId = networkId.Value});
 
