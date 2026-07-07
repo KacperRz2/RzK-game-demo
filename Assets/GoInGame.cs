@@ -5,6 +5,7 @@ using Unity.Entities;
 using Unity.NetCode;
 using Unity.Transforms;
 using Unity.Mathematics;
+using Unity.Rendering;
 
 
 /// <summary>
@@ -102,12 +103,15 @@ public partial struct GoInGameServerSystem : ISystem
             // Instantiate the prefab
             var player = commandBuffer.Instantiate(prefab);
 
-            var transform = LocalTransform.FromPosition(new float3(0.0F, 1.0F, 0.0F));
+            var transform = LocalTransform.FromPosition(new float3(0.0F, 0.5F, 0.0F));
             commandBuffer.SetComponent(player, transform);
 
             // Associate the instantiated prefab with the connected client's assigned NetworkId
             commandBuffer.SetComponent(player, new GhostOwner { NetworkId = networkId.Value});
 
+            float4 colour = networkId.Value > 1 ? new float4(0.0F, 0.0F, 1.0F, 1.0F) : new float4(1.0F, 0.0F, 0.0F, 1.0F);
+            commandBuffer.SetComponent(player, new URPMaterialPropertyBaseColor { Value = colour });
+            
             // Add the player to the linked entity group so it is destroyed automatically on disconnect
             commandBuffer.AppendToBuffer(reqSrc.ValueRO.SourceConnection, new LinkedEntityGroup{Value = player});
             commandBuffer.DestroyEntity(reqEntity);
