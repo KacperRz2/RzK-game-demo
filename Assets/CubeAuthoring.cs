@@ -11,7 +11,6 @@ public struct Cube : IComponentData
 [DisallowMultipleComponent]
 public class CubeAuthoring : MonoBehaviour
 {
-    public Color colour = Color.red;
     class CubeBaker : Baker<CubeAuthoring>
     {
         public override void Bake(CubeAuthoring authoring)
@@ -20,7 +19,7 @@ public class CubeAuthoring : MonoBehaviour
             AddComponent<Cube>(entity);
             AddComponent(entity, new URPMaterialPropertyBaseColor 
             { 
-                Value = new float4(authoring.colour.r, authoring.colour.g, authoring.colour.b, authoring.colour.a) 
+                Value = new float4(1.0F, 1.0F, 1.0F, 1.0F) 
             });
         }
     }

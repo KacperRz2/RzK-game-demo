@@ -1,4 +1,3 @@
-using UnityEngine;
 using Unity.Burst;
 using Unity.Entities;
 using Unity.Mathematics;
@@ -13,13 +12,13 @@ public partial struct CubeMovementSystem : ISystem
     [BurstCompile]
     public void OnUpdate(ref SystemState state)
     {
-        const float speed = 4.0F;
+        const float speed = 1.0F;
         
         foreach (var (input, velocity) in SystemAPI.Query<RefRO<CubeInput>, RefRW<PhysicsVelocity>>().WithAll<Simulate>())
         {
             var moveInput = new float2(input.ValueRO.Horizontal, input.ValueRO.Vertical);
             moveInput = math.normalizesafe(moveInput) * speed;
-            velocity.ValueRW.Linear = new float3(moveInput.x, velocity.ValueRO.Linear.y, moveInput.y);
+            velocity.ValueRW.Linear += new float3(moveInput.x, 0.0F, moveInput.y);
         }
     }
 }
@@ -31,6 +30,7 @@ public partial struct CubeServerMovementSystem : ISystem
     [BurstCompile]
     public void OnCreate(ref SystemState state)
     {
+        state.RequireForUpdate<Score>();
         state.RequireForUpdate<ScoreBufferElement>();
     }
     [BurstCompile]
@@ -56,7 +56,6 @@ public partial struct CubeServerMovementSystem : ISystem
                     ++lastElementValue.blueScore;
                 }
                 score.Add(lastElementValue);
-                Debug.Log($"{lastElementValue.redScore} {lastElementValue.blueScore}");
             }
         }
     }
