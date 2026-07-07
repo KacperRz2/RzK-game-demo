@@ -1,5 +1,6 @@
-using Unity.Entities;
 using UnityEngine;
+using Unity.Entities;
+using Unity.Mathematics;
 
 public struct CubeSpawner : IComponentData
 {
@@ -15,10 +16,12 @@ public class CubeSpawnerAuthoring : MonoBehaviour
     {
         public override void Bake(CubeSpawnerAuthoring authoring)
         {
-            CubeSpawner component = default(CubeSpawner);
+            CubeSpawner component = default;
             component.Cube = GetEntity(authoring.Cube, TransformUsageFlags.Dynamic);
             var entity = GetEntity(TransformUsageFlags.Dynamic);
             AddComponent(entity, component);
+            AddBuffer<ScoreBufferElement>(entity);
+            AppendToBuffer(entity, new ScoreBufferElement{redScore = 0, blueScore = 0});
         }
     }
 }

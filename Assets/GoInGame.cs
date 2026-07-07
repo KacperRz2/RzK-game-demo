@@ -107,9 +107,9 @@ public partial struct GoInGameServerSystem : ISystem
             commandBuffer.SetComponent(player, transform);
 
             // Associate the instantiated prefab with the connected client's assigned NetworkId
-            commandBuffer.SetComponent(player, new GhostOwner { NetworkId = networkId.Value});
+            commandBuffer.SetComponent(player, new GhostOwner { NetworkId = networkId.Value });
 
-            float4 colour = networkId.Value > 1 ? new float4(0.0F, 0.0F, 1.0F, 1.0F) : new float4(1.0F, 0.0F, 0.0F, 1.0F);
+            var colour = networkId.Value > 1 ? new float4(0.0F, 0.0F, 1.0F, 1.0F) : new float4(1.0F, 0.0F, 0.0F, 1.0F);
             commandBuffer.SetComponent(player, new URPMaterialPropertyBaseColor { Value = colour });
             
             // Add the player to the linked entity group so it is destroyed automatically on disconnect
