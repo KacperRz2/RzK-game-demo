@@ -21,7 +21,7 @@ public class ScoreAuthoring : MonoBehaviour
     {
         public override void Bake(ScoreAuthoring authoring)
         {   
-            var entity = GetEntity(TransformUsageFlags.Dynamic);
+            var entity = GetEntity(TransformUsageFlags.None);
             AddComponent<Score>(entity);
             AddBuffer<ScoreBufferElement>(entity);
             AppendToBuffer(entity, new ScoreBufferElement{redScore = 0, blueScore = 0});

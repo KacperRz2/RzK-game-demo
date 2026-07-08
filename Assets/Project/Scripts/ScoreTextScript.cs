@@ -24,7 +24,6 @@ public partial class UpdateScoreUISystem : SystemBase
 
     protected override void OnCreate()
     {
-        RequireForUpdate<CubeSpawner>();
         RequireForUpdate<ScoreBufferElement>();
     }
     protected override void OnUpdate()

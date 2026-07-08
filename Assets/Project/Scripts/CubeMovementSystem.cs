@@ -30,14 +30,11 @@ public partial struct CubeServerMovementSystem : ISystem
     [BurstCompile]
     public void OnCreate(ref SystemState state)
     {
-        state.RequireForUpdate<Score>();
         state.RequireForUpdate<ScoreBufferElement>();
     }
     [BurstCompile]
     public void OnUpdate(ref SystemState state)
     {
-        var score = SystemAPI.GetSingletonBuffer<ScoreBufferElement>();
-        
         foreach (var (velocity, trans, owner) in SystemAPI.Query<RefRW<PhysicsVelocity>, RefRW<LocalTransform>, RefRO<GhostOwner>>().WithAll<Simulate>())
         {
             if(trans.ValueRO.Position.y < -1.0F)
@@ -46,6 +43,7 @@ public partial struct CubeServerMovementSystem : ISystem
                 velocity.ValueRW.Angular = new float3(0.0F, 0.0F, 0.0F);
                 trans.ValueRW.Rotation = new float4(0.0F, 0.0F, 0.0F, 1.0F);
                 trans.ValueRW.Position = new float3(0.0F, 0.5F, 0.0F);
+                var score = SystemAPI.GetSingletonBuffer<ScoreBufferElement>();
                 ScoreBufferElement lastElementValue = score[score.Length - 1];
                 if(owner.ValueRO.NetworkId > 1)
                 {

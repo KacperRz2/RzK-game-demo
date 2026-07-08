@@ -15,7 +15,7 @@ public class CubeInputAuthoring : MonoBehaviour
     {
         public override void Bake(CubeInputAuthoring authoring)
         {
-            var entity = GetEntity(TransformUsageFlags.Dynamic);
+            var entity = GetEntity(TransformUsageFlags.None);
             AddComponent<CubeInput>(entity);
         }
     }

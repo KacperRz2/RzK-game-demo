@@ -17,7 +17,7 @@ public class CubeSpawnerAuthoring : MonoBehaviour
         {
             CubeSpawner component = default;
             component.Cube = GetEntity(authoring.Cube, TransformUsageFlags.Dynamic);
-            var entity = GetEntity(TransformUsageFlags.Dynamic);
+            var entity = GetEntity(TransformUsageFlags.None);
             AddComponent(entity, component);
         }
     }
